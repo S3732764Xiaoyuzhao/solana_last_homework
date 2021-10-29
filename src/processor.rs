@@ -1,9 +1,9 @@
 
 use crate::{
     instruction::Instruction,
-    error::CustomError,
-    error::CustomError::{DepositZero, WithdrawZero,SignatureError,UserDerivedAddressError,
-        ProgramDerivedAddressError},
+        error::CustomError,
+        error::CustomError::{DepositZero, WithdrawZero,SignatureError,UserDerivedAddressError,
+            ProgramDerivedAddressError},
     state::UserBalance,
 };
 use borsh::BorshDeserialize;
@@ -60,7 +60,7 @@ impl Processor {
         if !user_account.is_signer {
             return Err(SignatureError.into());
         }
-        let ada_account = next_account_info(account_info_iter)?; 
+        let user_associated_account = next_account_info(account_info_iter)?; 
         let user_derived_account = next_account_info(account_info_iter)?; 
         let program_associated_account = next_account_info(account_info_iter)?; 
         let token_program = next_account_info(account_info_iter)?;
@@ -78,15 +78,15 @@ impl Processor {
         msg!("amount {:?}",amount);
         user_derived_account_data.balance = user_derived_account_data.balance.checked_add(amount).ok_or(CustomError::CalculationOverflow)?;
         msg!("user_derived_account_data.balance {:?}",user_derived_account_data.balance);
-        let ada_account_unpack = TokenAccount::unpack_from_slice(&ada_account.data.borrow())?;
-        msg!("ada_account_unpack {:?}",ada_account_unpack);
+        let user_associated_account_unpack = TokenAccount::unpack_from_slice(&user_associated_account.data.borrow())?;
+        msg!("user_associated_account_unpack {:?}",user_associated_account_unpack);
         let program_associated_account_unpack = TokenAccount::unpack_from_slice(&program_associated_account.data.borrow())?;
-        msg!("ada_account_unpack {:?}",program_associated_account_unpack);
+        msg!("user_associated_account_unpack {:?}",program_associated_account_unpack);
         invoke(
 
             &spl_token::instruction::transfer_checked(
                 &token_program.key,
-                &ada_account.key,
+                &user_associated_account.key,
                 &spl_token_account.key,
                 &program_associated_account.key,
                 &user_account.key,
@@ -98,15 +98,15 @@ impl Processor {
                 spl_token_account.clone(),
                 user_account.clone(),
                 token_program.clone(),
-                ada_account.clone(),
+                user_associated_account.clone(),
                 program_associated_account.clone(),
             ],
         )?;
         user_derived_account_data.serialize(&mut &mut user_derived_account.data.borrow_mut()[..])?;
-        let ada_account_unpack = TokenAccount::unpack_from_slice(&ada_account.data.borrow())?;
-        msg!("ada_account_unpack {:?}",ada_account_unpack);
+        let user_associated_account_unpack = TokenAccount::unpack_from_slice(&user_associated_account.data.borrow())?;
+        msg!("user_associated_account_unpack {:?}",user_associated_account_unpack);
         let program_associated_account_unpack = TokenAccount::unpack_from_slice(&program_associated_account.data.borrow())?;
-        msg!("ada_account_unpack {:?}",program_associated_account_unpack);
+        msg!("user_associated_account_unpack {:?}",program_associated_account_unpack);
         Ok(())
     }
     fn process_withdraw(
@@ -118,7 +118,7 @@ impl Processor {
         msg!("process_withdraw");
         let account_info_iter = &mut accounts.iter();
         let user_account = next_account_info(account_info_iter)?; 
-        let ada_account = next_account_info(account_info_iter)?; 
+        let user_associated_account = next_account_info(account_info_iter)?; 
         let user_derived_account = next_account_info(account_info_iter)?; 
         let program_derived_account = next_account_info(account_info_iter)?; 
         let program_associated_account = next_account_info(account_info_iter)?; 
@@ -127,8 +127,8 @@ impl Processor {
         let seed = "last_homework";
         let check_user_derived_pubkey = Pubkey::create_with_seed(user_account.key,
              &seed, program_id).unwrap();
-        let ada_account_unpack = TokenAccount::unpack_from_slice(&ada_account.data.borrow())?;
-        msg!("ada_account_unpack {:?}",ada_account_unpack);   
+        let user_associated_account_unpack = TokenAccount::unpack_from_slice(&user_associated_account.data.borrow())?;
+        msg!("user_associated_account_unpack {:?}",user_associated_account_unpack);   
         let program_associated_account_unpack = TokenAccount::unpack_from_slice(&program_associated_account.data.borrow())?;
         msg!("program_associated_account_unpack {:?}",program_associated_account_unpack);
         if &check_user_derived_pubkey != user_derived_account.key{
@@ -149,7 +149,7 @@ impl Processor {
                 &token_program.key,
                 &program_associated_account.key,
                 &spl_token_account.key,
-                &ada_account.key,
+                &user_associated_account.key,
                 &program_derived_account.key,
                 &[],
                 user_derived_account_data.balance as u64,
@@ -159,14 +159,14 @@ impl Processor {
                 spl_token_account.clone(),
                 program_derived_account.clone(),
                 token_program.clone(),
-                ada_account.clone(),
+                user_associated_account.clone(),
                 program_associated_account.clone(),
                 program_derived_account.clone(),
             ],
             &[&[b"last_homework",&[nonce]]],
         )?;
-        let ada_account_unpack = TokenAccount::unpack_from_slice(&ada_account.data.borrow())?;
-        msg!("ada_account_unpack {:?}",ada_account_unpack);
+        let user_associated_account_unpack = TokenAccount::unpack_from_slice(&user_associated_account.data.borrow())?;
+        msg!("user_associated_account_unpack {:?}",user_associated_account_unpack);
         let program_associated_account_unpack = TokenAccount::unpack_from_slice(&program_associated_account.data.borrow())?;
         msg!("program_associated_account_unpack {:?}",program_associated_account_unpack);
         user_derived_account_data.balance = 0;

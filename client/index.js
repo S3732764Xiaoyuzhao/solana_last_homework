@@ -29,7 +29,11 @@ const rent = new web3.PublicKey('SysvarRent111111111111111111111111111111111');
     // Generate a new wallet to receive newly minted token
     var toWallet = web3.Keypair.generate();
     console.log('toWallet: ->', toWallet.publicKey.toBase58());
-    await connection.requestAirdrop(toWallet.publicKey, 10000000000);
+    var toAirdropSignature = await connection.requestAirdrop(
+        toWallet.publicKey,
+        web3.LAMPORTS_PER_SOL,
+    );
+    await connection.confirmTransaction(toAirdropSignature);
 
     //create new token mint
     let mint = await splToken.Token.createMint(

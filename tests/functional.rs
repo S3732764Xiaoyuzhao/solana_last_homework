@@ -31,11 +31,7 @@ async fn test_helloworld() {
     //
     let user_pubkey_string = user_pubkey.to_string() ;
     let digest = md5::compute(user_pubkey_string);
-    let seed = digest.iter().map(|&x|{
-        [char::from_digit((x/16) as u32 ,16).unwrap(), 
-        char::from_digit((x%16) as u32 ,16).unwrap()]
-        .iter().map(|&a|{a.to_string()}).collect::<String>()
-    }).collect::<String>();
+    let seed = "last_homework";
     let user_derived_pubkey = Pubkey::create_with_seed(&user_pubkey,
         &seed, &program_id).unwrap();
 

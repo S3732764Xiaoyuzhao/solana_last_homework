@@ -14,7 +14,6 @@ solana-program = "1.7.3"
 thiserror = "1.0.24"
 borsh = "0.9"
 spl-token = {version = "3.2.0", features = ["no-entrypoint"]}
-md5 = "0.7.0"
 spl-associated-token-account = {version = "1.0.3", features = ["no-entrypoint"]}
 
 [dev-dependencies]
