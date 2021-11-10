@@ -3,7 +3,7 @@ const splToken = require('@solana/spl-token');
 const BN = require('bn.js');
 
 const decimals = 9;
-const programId = new web3.PublicKey('FweokCxre9soxyZy4bdeqye3D276tPucKeAGvTvP6v5B');
+const programId = new web3.PublicKey('5FtbYrH9uyXhvrMLUWxkDHjoK3JBzJEPE7X1JRvyExvE');
 const seed = 'last_homework';
 const token_programId = new web3.PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
 const associated_token_programId = new web3.PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL');
@@ -142,7 +142,7 @@ const rent = new web3.PublicKey('SysvarRent111111111111111111111111111111111');
     //Create the currency ada of the program derived address
     const instruction_create_program_ada = new web3.TransactionInstruction({
         keys: [
-            { pubkey: toWallet.publicKey, isSigner: true, isWritable: false },
+            { pubkey: toWallet.publicKey, isSigner: true, isWritable: true },
             { pubkey: programId_derived_pubkey, isSigner: false, isWritable: true },
             { pubkey: programId_associated_address, isSigner: false, isWritable: true },
             { pubkey: mint.publicKey, isSigner: false, isWritable: false },
@@ -174,7 +174,7 @@ const rent = new web3.PublicKey('SysvarRent111111111111111111111111111111111');
     console.log(indexData);
     const instruction = new web3.TransactionInstruction({
         keys: [
-            { pubkey: toWallet.publicKey, isSigner: true, isWritable: false },
+            { pubkey: toWallet.publicKey, isSigner: true, isWritable: true },
             { pubkey: toTokenAccount.address, isSigner: false, isWritable: true },
             { pubkey: user_derived_pubkey, isSigner: false, isWritable: true },
             { pubkey: programId_associated_address, isSigner: false, isWritable: true },
@@ -196,10 +196,10 @@ const rent = new web3.PublicKey('SysvarRent111111111111111111111111111111111');
 
     //toWallet withdraw all deposits
     const instruction_claim = new web3.TransactionInstruction({
-        keys: [{ pubkey: toWallet.publicKey, isSigner: true, isWritable: false },
+        keys: [{ pubkey: toWallet.publicKey, isSigner: true, isWritable: true },
         { pubkey: toTokenAccount.address, isSigner: false, isWritable: true },
         { pubkey: user_derived_pubkey, isSigner: false, isWritable: true },
-        { pubkey: programId_derived_pubkey, isSigner: false, isWritable: false },
+        { pubkey: programId_derived_pubkey, isSigner: false, isWritable: trues },
         { pubkey: programId_associated_address, isSigner: false, isWritable: true },
         { pubkey: token_programId, isSigner: false, isWritable: false },
         { pubkey: mint.publicKey, isSigner: false, isWritable: false },],
